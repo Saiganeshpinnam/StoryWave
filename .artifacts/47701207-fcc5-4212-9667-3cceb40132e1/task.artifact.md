@@ -1,0 +1,3 @@
+- `[x]` Add a Medium length story to `MockStoriesData.kt` (ID 13)
+- `[x]` Add a Long length story to `MockStoriesData.kt` (ID 14)
+- `[x]` Verify build with `./gradlew :app:assembleDebug`
