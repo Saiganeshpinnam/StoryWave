@@ -7,6 +7,7 @@ import com.example.englishstories.model.Story
 import com.example.englishstories.model.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import android.util.Log
 
 class StoriesRepository(
     private val storyDao: StoryDao,
@@ -15,23 +16,27 @@ class StoriesRepository(
     // ROOM DATABASE DAO ACCESS (Local cache Flow)
     fun getCachedStories(): Flow<List<Story>> = storyDao.getAllStoriesFlow()
 
-    // Seeds the database with the default mock stories if empty
+
     suspend fun seedDatabaseIfEmpty() {
         try {
+            Log.d("StoriesRepo", "========== MOCK STORIES ==========")
+            Log.d("StoriesRepo", "Mock Story Count = ${MockStoriesData.mockStories.size}")
+
             val current = storyDao.getAllStoriesFlow().firstOrNull() ?: emptyList()
-            if (current.isEmpty()) {
-                storyDao.insertStories(MockStoriesData.mockStories)
-            }
+            Log.d("StoriesRepo", "Before Seed Count = ${current.size}")
+
+            // Always insert/update all mock stories
+            Log.d("StoriesRepo", "Synchronizing local database with mock stories...")
+            storyDao.insertStories(MockStoriesData.mockStories)
+
+            val after = storyDao.getAllStoriesFlow().firstOrNull() ?: emptyList()
+            Log.d("StoriesRepo", "After Seed Count = ${after.size}")
+
         } catch (e: Exception) {
-            e.printStackTrace()
-            // Fallback seed in case flow collection has issues
-            try {
-                storyDao.insertStories(MockStoriesData.mockStories)
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-            }
+            Log.e("StoriesRepo", "Seed error", e)
         }
     }
+
 
     // RETROFIT API CALLS (PostgreSQL Sync)
     suspend fun syncStoriesWithBackend() {

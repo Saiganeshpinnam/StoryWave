@@ -18,9 +18,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.englishstories.viewmodel.StoriesViewModel
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +56,14 @@ fun StoryDetailScreen(
     }
 
     val scrollState = rememberScrollState()
+    val showTopBarTitle by remember {
+        derivedStateOf { scrollState.value > 600 }
+    }
+    
+    val topBarBackgroundColor by animateColorAsState(
+        targetValue = if (showTopBarTitle) MaterialTheme.colorScheme.background else Color.Transparent,
+        label = "TopBarBackground"
+    )
 
     // Calculate reading progress dynamically based on scroll position
     val calculatedProgress = if (scrollState.maxValue > 0) {
@@ -69,85 +80,81 @@ fun StoryDetailScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(story.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, maxLines = 1) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.toggleBookmark(story.id) }) {
-                        Icon(
-                            imageVector = if (story.isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                            contentDescription = "Bookmark",
-                            tint = if (story.isBookmarked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                    IconButton(onClick = {
-                        Toast.makeText(context, "Link copied to clipboard!", Toast.LENGTH_SHORT).show()
-                    }) {
-                        Icon(Icons.Default.Share, contentDescription = "Share", tint = MaterialTheme.colorScheme.onBackground)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
-            )
-        },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
+            // Scrollable Content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
             ) {
-                // Header Cover Background Gradient (Mock Image Container)
+                // Header Cover Image (Immersive - at the very top)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(180.dp)
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    MaterialTheme.colorScheme.background
+                        .height(300.dp)
+                ) {
+                    AsyncImage(
+                        model = story.coverUrl,
+                        contentDescription = story.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.FillWidth
+                    )
+
+                    // Dark gradient overlay for readability of chips
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color(0x99000000)
+                                    )
                                 )
                             )
-                        )
-                        .padding(16.dp),
-                    contentAlignment = Alignment.BottomStart
-                ) {
+                    )
+
+                    // Category & Reading Time Chips
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(6.dp))
+                                .background(
+                                    MaterialTheme.colorScheme.primary,
+                                    RoundedCornerShape(6.dp)
+                                )
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
                                 text = story.categoryId.uppercase(),
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
+
                         Box(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(6.dp))
+                                .background(
+                                    MaterialTheme.colorScheme.surfaceVariant,
+                                    RoundedCornerShape(6.dp)
+                                )
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
                                 text = "${story.readingTime} min read",
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -211,9 +218,74 @@ fun StoryDetailScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(modifier = Modifier.height(80.dp)) // Extra padding to make sure scrolling to end is possible
+                    Spacer(modifier = Modifier.height(120.dp)) // Extra padding to make sure scrolling to end is possible
                 }
             }
+
+            // Floating Top App Bar
+            TopAppBar(
+                title = { 
+                    AnimatedVisibility(
+                        visible = showTopBarTitle,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Text(
+                            text = story.title, 
+                            color = MaterialTheme.colorScheme.onBackground, 
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        ) 
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = if (!showTopBarTitle) Color.Black.copy(alpha = 0.3f) else Color.Transparent
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = if (showTopBarTitle) MaterialTheme.colorScheme.onBackground else Color.White
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { viewModel.toggleBookmark(story.id) },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = if (!showTopBarTitle) Color.Black.copy(alpha = 0.3f) else Color.Transparent
+                        )
+                    ) {
+                        Icon(
+                            imageVector = if (story.isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                            contentDescription = "Bookmark",
+                            tint = if (story.isBookmarked) MaterialTheme.colorScheme.primary 
+                                   else if (showTopBarTitle) MaterialTheme.colorScheme.onBackground 
+                                   else Color.White
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            Toast.makeText(context, "Link copied to clipboard!", Toast.LENGTH_SHORT).show()
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = if (!showTopBarTitle) Color.Black.copy(alpha = 0.3f) else Color.Transparent
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share, 
+                            contentDescription = "Share", 
+                            tint = if (showTopBarTitle) MaterialTheme.colorScheme.onBackground else Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = topBarBackgroundColor)
+            )
 
             // Floating Progress Indicator bar
             LinearProgressIndicator(

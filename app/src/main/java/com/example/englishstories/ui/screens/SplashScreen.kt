@@ -1,17 +1,18 @@
 package com.example.englishstories.ui.screens
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.englishstories.R
 import kotlinx.coroutines.delay
 
 @Composable
@@ -39,24 +40,24 @@ fun SplashScreen(onNavigateToLogin: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Book,
-                    contentDescription = "App Logo",
-                    modifier = Modifier.size(100.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = "StoryWave Logo",
+                    modifier = Modifier.size(180.dp)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = "English Stories",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Light,
+                    text = "StoryWave",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Material 3 Showcase App",
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = "Read • Learn • Grow",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }

@@ -85,9 +85,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var currentScreen by remember { mutableStateOf("Splash") }
-            var isDarkTheme by remember { mutableStateOf(true) }
+            var isDarkTheme by remember { mutableStateOf(false) }
             var selectedStoryId by remember { mutableStateOf<Int?>(null) }
+            var selectedCategoryId by remember { mutableStateOf<String?>(null) }
             var selectedCategoryTab by remember { mutableStateOf("all") }
+            var previousScreen by remember { mutableStateOf("Home") }
 
             val colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme
 
@@ -130,6 +132,7 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToProfile = { currentScreen = "Profile" },
                                 onNavigateToDetail = { storyId ->
                                     selectedStoryId = storyId
+                                    previousScreen = "Home"
                                     currentScreen = "StoryDetail"
                                 }
                             )
@@ -138,13 +141,27 @@ class MainActivity : ComponentActivity() {
                             CategoriesScreen(
                                 viewModel = viewModel,
                                 onCategoryClick = { categoryId ->
-                                    selectedCategoryTab = categoryId
-                                    currentScreen = "Home"
+                                    selectedCategoryId = categoryId
+                                    currentScreen = "CategoryStories"
                                 },
                                 onNavigateToHome = { currentScreen = "Home" },
                                 onNavigateToFavorites = { currentScreen = "Favorites" },
                                 onNavigateToProfile = { currentScreen = "Profile" }
                             )
+                        }
+                        "CategoryStories" -> {
+                            selectedCategoryId?.let { categoryId ->
+                                CategoryStoriesScreen(
+                                    viewModel = viewModel,
+                                    categoryId = categoryId,
+                                    onNavigateBack = { currentScreen = "Categories" },
+                                    onNavigateToDetail = { storyId ->
+                                        selectedStoryId = storyId
+                                        previousScreen = "CategoryStories"
+                                        currentScreen = "StoryDetail"
+                                    }
+                                )
+                            }
                         }
                         "Favorites" -> {
                             FavoritesScreen(
@@ -154,6 +171,7 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToProfile = { currentScreen = "Profile" },
                                 onNavigateToDetail = { storyId ->
                                     selectedStoryId = storyId
+                                    previousScreen = "Favorites"
                                     currentScreen = "StoryDetail"
                                 }
                             )
@@ -163,7 +181,7 @@ class MainActivity : ComponentActivity() {
                                 StoryDetailScreen(
                                     viewModel = viewModel,
                                     storyId = storyId,
-                                    onNavigateBack = { currentScreen = "Home" }
+                                    onNavigateBack = { currentScreen = previousScreen }
                                 )
                             }
                         }

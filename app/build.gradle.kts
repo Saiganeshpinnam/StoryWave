@@ -72,6 +72,8 @@ dependencies {
     
     // ViewModel Compose integration
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation("io.coil-kt:coil-compose:2.7.0")
     
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

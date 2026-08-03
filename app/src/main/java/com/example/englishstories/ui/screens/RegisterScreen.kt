@@ -1,14 +1,17 @@
 package com.example.englishstories.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.englishstories.R
 import com.example.englishstories.viewmodel.StoriesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,6 +36,12 @@ fun RegisterScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.app_logo),
+            contentDescription = "StoryWave Logo",
+            modifier = Modifier.size(80.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Create Account",
             style = MaterialTheme.typography.headlineMedium,

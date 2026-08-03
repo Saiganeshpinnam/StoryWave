@@ -22,19 +22,47 @@ class StoriesViewModel(
     private val _userStats = MutableStateFlow(UserStats(storiesRead = 2, dayStreak = 4, minutesSpent = 184.0, favoriteCount = 1))
     val userStats: StateFlow<UserStats> = _userStats.asStateFlow()
 
+
     init {
         loadContent()
     }
 
+//    private fun loadContent() {
+//        _isLoading.value = true
+//
+//        viewModelScope.launch {
+//            // Seed the database with local copy if it's currently empty
+//            repository.seedDatabaseIfEmpty()
+//        }
+//
+//        // Collect cached stories as a Flow in a separate job so it doesn't block sync execution
+//        viewModelScope.launch {
+//            repository.getCachedStories().collect { cached ->
+//                _uiState.update { it.copy(stories = cached) }
+//            }
+//        }
+//
+//        viewModelScope.launch {
+//            // Sync with Retrofit server in background
+//            try {
+//                repository.syncStoriesWithBackend()
+//                val categories = repository.getRemoteCategories()
+//                _uiState.update { it.copy(categories = categories) }
+//            } catch (e: Exception) {
+//                _uiState.update { it.copy(error = e.message) }
+//            } finally {
+//                _isLoading.value = false
+//            }
+//        }
+//    }
+
     private fun loadContent() {
         _isLoading.value = true
-        
+
         viewModelScope.launch {
-            // Seed the database with local copy if it's currently empty
             repository.seedDatabaseIfEmpty()
         }
 
-        // Collect cached stories as a Flow in a separate job so it doesn't block sync execution
         viewModelScope.launch {
             repository.getCachedStories().collect { cached ->
                 _uiState.update { it.copy(stories = cached) }
@@ -42,19 +70,11 @@ class StoriesViewModel(
         }
 
         viewModelScope.launch {
-            // Sync with Retrofit server in background
-            try {
-                repository.syncStoriesWithBackend()
-                val categories = repository.getRemoteCategories()
-                _uiState.update { it.copy(categories = categories) }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
-            } finally {
-                _isLoading.value = false
-            }
+            val categories = repository.getRemoteCategories()
+            _uiState.update { it.copy(categories = categories) }
+            _isLoading.value = false
         }
     }
-
     fun login(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true

@@ -1,17 +1,18 @@
 package com.example.englishstories.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.englishstories.R
 import com.example.englishstories.viewmodel.StoriesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,23 +35,23 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.AutoStories,
-            contentDescription = "Logo",
-            modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.primary
+        Image(
+            painter = painterResource(id = R.drawable.app_logo),
+            contentDescription = "StoryWave Logo",
+            modifier = Modifier.size(120.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "English Stories",
-            style = MaterialTheme.typography.headlineMedium,
+            text = "StoryWave",
+            style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Sign in to access offline library",
+            text = "Read • Learn • Grow",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Medium
         )
         
         Spacer(modifier = Modifier.height(32.dp))
