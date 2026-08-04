@@ -1,5 +1,5 @@
-- [x] Update `strings.xml` with new app name "StoryWave"
-- [x] Update `SplashScreen.kt` with new logo and branding
-- [x] Update `LoginScreen.kt` with new logo and branding
-- [x] Update `RegisterScreen.kt` with new logo and branding
-- [ ] Verify build with `./gradlew :app:assembleDebug`
+- [x] Add `deleteUser` to `UserDao` in `RoomDatabase.kt`
+- [x] Add `deleteUser` to `StoriesRepository.kt`
+- [x] Add `deleteAccount` logic to `StoriesViewModel.kt`
+- [x] Update `ProfileScreen.kt` with "Delete Account" option and confirmation dialog
+- [x] Verify build with `./gradlew :app:assembleDebug`

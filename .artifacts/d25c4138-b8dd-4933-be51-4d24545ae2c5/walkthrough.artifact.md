@@ -1,25 +1,30 @@
-# Walkthrough - StoryWave Branding Update
+# Walkthrough - Added Delete Account Feature
 
-I have updated the app's branding from "English Stories" to **StoryWave**, including the new logo and slogan.
+I have added a "Delete Account" feature to the StoryWave app, allowing users to permanently remove their account and all associated local data.
 
 ## Changes
 
-### 1. Resource Updates
-- **strings.xml**: Updated `app_name` to "StoryWave".
+### 1. Database & Repository
+- **UserDao**: Added a new delete query: `DELETE FROM users WHERE email = :email`.
+- **StoriesRepository**: Exposed the `deleteUser` method to the logic layer.
 
-### 2. UI Branding (Splash, Login, Register)
-I replaced the generic material icons with the new StoryWave logo across the following screens:
-- **SplashScreen.kt**: Added the logo and the slogan "Read • Learn • Grow".
-- **LoginScreen.kt**: Integrated the new logo and updated the branding text.
-- **RegisterScreen.kt**: Added the logo for a consistent registration experience.
+### 2. ViewModel Logic
+- **Session Tracking**: The `StoriesViewModel` now tracks the `currentUserEmail` upon successful login.
+- **Account Deletion**: Implemented `deleteAccount()` which:
+    1. Removes the user from the local database.
+    2. Clears the current session.
+    3. Notifies the UI to navigate back to the Login screen.
 
-## Important Note
-
-> [!CAUTION]
-> The code now references `R.drawable.app_logo`.
-> **You must save your logo image as `app_logo.png` in the `app/src/main/res/drawable/` directory** for the project to build successfully.
+### 3. User Interface (Profile Screen)
+- **Settings Integration**: Added a "Delete Account" option in the Profile settings section with a clear warning icon.
+- **Safety Confirmation**: When clicked, a confirmation dialog appears to prevent accidental deletions. Users must explicitly confirm they want to proceed.
+- **Automatic Logout**: Upon successful deletion, the user is automatically logged out and redirected to the login screen.
 
 ## Verification Results
 
 ### Build Status
-- The code is updated and syntactically correct, but a full build will require the physical `app_logo.png` file to be present in the resources.
+- Ran `./gradlew :app:assembleDebug` - **Success**.
+
+### Security & UX
+- Verified that the "Delete" action is irreversible and requires explicit user consent through an `AlertDialog`.
+- Verified that deleting an account correctly clears the app session.

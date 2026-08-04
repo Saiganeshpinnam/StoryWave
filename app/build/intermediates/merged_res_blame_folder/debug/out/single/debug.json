@@ -1,18 +1,22 @@
 [
     {
-        "merged": "com.example.englishstories.app-merged_res-51:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.example.englishstories.app-main-53:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-merged_res-51:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-main-53:\\drawable\\ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.example.englishstories.app-merged_res-51:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.example.englishstories.app-main-53:/drawable/ic_launcher_background.xml"
+        "merged": "com.storywave.app-merged_res-51:/drawable_app_logo.xml.flat",
+        "source": "com.storywave.app-main-53:/drawable/app_logo.xml"
     },
     {
-        "merged": "com.example.englishstories.app-merged_res-51:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.example.englishstories.app-main-53:/drawable/ic_launcher_foreground.xml"
+        "merged": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-merged_res-51:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-main-53:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
-        "merged": "com.example.englishstories.app-merged_res-51:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.example.englishstories.app-main-53:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-merged_res-51:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-main-53:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-merged_res-51:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Saiganesh Pinnam\\.gradle\\daemon\\8.2\\com.storywave.app-main-53:\\mipmap-anydpi-v26\\ic_launcher.xml"
     }
 ]

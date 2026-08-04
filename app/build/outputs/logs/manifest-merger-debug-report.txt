@@ -63,7 +63,6 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Saiganesh Pinnam\.
 MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\903d9bf3c2a0120b1bf31c831ad74cc0\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.exifinterface:exifinterface:1.3.7] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\dc35e1246478ecf1d50666a3f864e357\transformed\exifinterface-1.3.7\AndroidManifest.xml:17:1-24:12
 	package
-		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:3:5-41
 		INJECTED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml
@@ -72,9 +71,13 @@ MERGED from [androidx.exifinterface:exifinterface:1.3.7] C:\Users\Saiganesh Pinn
 	xmlns:android
 		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:5:5-67
+ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:4:5-67
 	android:name
-		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:5:22-64
+		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:4:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:5:5-79
+	android:name
+		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:5:22-76
 application
 ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:7:5-23:19
 INJECTED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:7:5-23:19
@@ -110,14 +113,14 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Saiganesh Pinnam\.
 		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:8:9-35
 	android:theme
 		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:13:9-66
-activity#com.example.englishstories.MainActivity
+activity#com.storywave.app.MainActivity
 ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:14:9-22:20
 	android:exported
 		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:16:13-36
 	android:theme
 		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:17:13-70
 	android:name
-		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:15:13-41
+		ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:15:13-58
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
 ADDED from C:\Users\Saiganesh Pinnam\Downloads\English-Stories-AiStudio-main\English-Stories-AiStudio-main\android\app\src\main\AndroidManifest.xml:18:13-21:29
 action#android.intent.action.MAIN
@@ -292,7 +295,7 @@ ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\
 		ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
 	android:name
 		ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
-permission#com.example.englishstories.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+permission#com.storywave.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
 		ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
@@ -302,7 +305,7 @@ uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
-uses-permission#com.example.englishstories.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission#com.storywave.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.12.0] C:\Users\Saiganesh Pinnam\.gradle\caches\transforms-3\8de3d65bb43563d0ca7a824b5db8751f\transformed\core-1.12.0\AndroidManifest.xml:26:22-94

@@ -1,41 +1,48 @@
-# Implementation Plan - Update App Branding to StoryWave
+# Implementation Plan - Delete Account Feature
 
-This plan involves replacing the current generic icons with the new "StoryWave" logo provided by the user and updating the app's name and slogan throughout the onboarding and login screens.
+This plan adds a "Delete Account" option to the Profile screen, allowing users to permanently remove their data from the local database.
 
 ## User Review Required
 
-> [!IMPORTANT]
-> **Action Required**: Before I apply these changes, please ensure you have saved the provided image into your project at:
-> `app/src/main/res/drawable/app_logo.png`
-> (Rename the image file to `app_logo.png` if it has a different name).
+> [!CAUTION]
+> Deleting an account is a permanent action. All local data associated with the user will be removed. I will include a confirmation dialog to prevent accidental deletions.
 
 ## Proposed Changes
 
-### UI Screens
+### Data Layer
 
-#### [MODIFY] [LoginScreen.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/example/englishstories/ui/screens/LoginScreen.kt)
-- Replace the `Icons.Default.AutoStories` icon with an `Image` component using `painterResource(id = R.drawable.app_logo)`.
-- Update the headline text from "English Stories" to "StoryWave".
-- Update the sub-headline to reflect the new branding.
+#### [MODIFY] [RoomDatabase.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/data/local/RoomDatabase.kt)
+- Add `@Query("DELETE FROM users WHERE email = :email")` to `UserDao`.
 
-#### [MODIFY] [RegisterScreen.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/example/englishstories/ui/screens/RegisterScreen.kt)
-- Add the `app_logo` image at the top of the registration form for consistency.
-- Update any text references to the app name.
+#### [MODIFY] [StoriesRepository.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/repository/StoriesRepository.kt)
+- Add `deleteUser(email: String)` method.
 
-#### [MODIFY] [SplashScreen.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/example/englishstories/ui/screens/SplashScreen.kt)
-- Replace the `Icons.Default.Book` icon with the new `app_logo`.
-- Update the title and slogan to "StoryWave" and "Read • Learn • Grow".
+### Logic Layer
 
-### Resources
+#### [MODIFY] [StoriesViewModel.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/viewmodel/StoriesViewModel.kt)
+- Track the `currentUserEmail`.
+- Implement `deleteAccount()` logic:
+    1. Call repository to delete user.
+    2. Clear local session state.
+    3. Trigger logout.
 
-#### [MODIFY] [strings.xml](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/res/values/strings.xml)
-- Change `app_name` to "StoryWave".
+### UI Layer
+
+#### [MODIFY] [ProfileScreen.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/ui/screens/ProfileScreen.kt)
+- Add a "Delete Account" row in the settings section with a `DeleteForever` icon.
+- Implement an `AlertDialog` for confirmation.
+- On confirmation, execute the deletion and navigate to the Login screen.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `./gradlew :app:assembleDebug` to ensure no resource errors (e.g., missing `app_logo`).
+- Build the project using `./gradlew :app:assembleDebug`.
 
 ### Manual Verification
-- Launch the app and verify the splash screen shows the new logo and title.
-- Verify the login and registration screens display the new branding correctly.
+1. Register a test account and log in.
+2. Navigate to the Profile screen.
+3. Click "Delete Account".
+4. Verify the confirmation dialog appears.
+5. Confirm deletion.
+6. Verify the app returns to the Login screen.
+7. Attempt to log in with the deleted email and verify it shows "User not found".

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.englishstories.app-mergeDebugResources-49:/values-lo/values-lo.xml",
+            "outputFile": "com.storywave.app-mergeDebugResources-49:/values-lo/values-lo.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Saiganesh Pinnam\\.gradle\\caches\\transforms-3\\5cc0fa096f5b5dd0a60d4ea6099f5528\\transformed\\jetified-material3-1.1.2\\res\\values-lo\\values-lo.xml",
