@@ -69,11 +69,13 @@ dependencies {
     // Retrofit & Gson API
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gson)
+    implementation(libs.retrofit.scalars)
     
     // ViewModel Compose integration
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

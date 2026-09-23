@@ -1,30 +1,30 @@
-# Walkthrough - Added Delete Account Feature
+# Walkthrough - Enhanced Authentication Debugging
 
-I have added a "Delete Account" feature to the StoryWave app, allowing users to permanently remove their account and all associated local data.
+I have updated the app's authentication logic to help you identify the exact cause of the "Server returned non-JSON" error during login.
 
 ## Changes
 
-### 1. Database & Repository
-- **UserDao**: Added a new delete query: `DELETE FROM users WHERE email = :email`.
-- **StoriesRepository**: Exposed the `deleteUser` method to the logic layer.
+### 1. Robust Response Capture
+- **StoriesViewModel.kt**: I updated the `login` and `register` functions to handle cases where the server sends back HTML instead of JSON.
+- **Clearer Error Messages**: If the server returns an HTML page (like a 404 or a Spring Security login page), the app will now say: **"Server Error: Received HTML instead of JSON."** This prevents the cryptic malformed JSON crash you were seeing.
 
-### 2. ViewModel Logic
-- **Session Tracking**: The `StoriesViewModel` now tracks the `currentUserEmail` upon successful login.
-- **Account Deletion**: Implemented `deleteAccount()` which:
-    1. Removes the user from the local database.
-    2. Clears the current session.
-    3. Notifies the UI to navigate back to the Login screen.
+### 2. Deep Technical Logging
+- **Full Response Logging**: I added `Log.e` calls that print the **entire raw server response** to your Logcat.
+- **Error Code Tracking**: If the server returns a failure code (like 401 or 500), the app now logs the specific code and the server's error message.
 
-### 3. User Interface (Profile Screen)
-- **Settings Integration**: Added a "Delete Account" option in the Profile settings section with a clear warning icon.
-- **Safety Confirmation**: When clicked, a confirmation dialog appears to prevent accidental deletions. Users must explicitly confirm they want to proceed.
-- **Automatic Logout**: Upon successful deletion, the user is automatically logged out and redirected to the login screen.
+## How to Debug Your Backend Now
+
+1.  **Run the app** on your mobile device.
+2.  Attempt to **Login**.
+3.  In Android Studio, open the **Logcat** tab (at the bottom).
+4.  Filter the search by: `StoriesVM`.
+5.  **Look for the log entry**: `Login parsing error. Raw body: ...`.
+6.  **Read the HTML content**: Look for the `<title>` tag in that log. It will usually say something like **"Whitelabel Error Page"**, **"404 Not Found"**, or **"Login - Spring Boot"**.
+
+> [!TIP]
+> If you see a Spring Boot login page in the logs, it means your backend's security configuration is redirecting the API request to a web login page instead of returning an unauthorized JSON response.
 
 ## Verification Results
 
 ### Build Status
 - Ran `./gradlew :app:assembleDebug` - **Success**.
-
-### Security & UX
-- Verified that the "Delete" action is irreversible and requires explicit user consent through an `AlertDialog`.
-- Verified that deleting an account correctly clears the app session.

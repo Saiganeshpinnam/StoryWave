@@ -121,13 +121,13 @@ fun ProfileScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Active Reader",
+                        text = if (userStats.username.isNotEmpty()) userStats.username else "Active Reader",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "saiganeshpinnam41@gmail.com",
+                        text = if (userStats.email.isNotEmpty()) userStats.email else "Verified Reader",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

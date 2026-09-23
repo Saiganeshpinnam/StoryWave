@@ -14,11 +14,20 @@ import androidx.room.Room
 import com.storywave.app.data.local.AppRoomDatabase
 import com.storywave.app.data.remote.RetrofitService
 import com.storywave.app.data.remote.NetworkObserver
+import com.storywave.app.data.remote.TokenManager
+import com.storywave.app.data.remote.AuthInterceptor
 import com.storywave.app.repository.StoriesRepository
 import com.storywave.app.ui.screens.*
 import com.storywave.app.viewmodel.StoriesViewModel
+import com.google.gson.GsonBuilder
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 // Standard Material 3 Dark Color Scheme (Classic Midnight theme)
 val DarkColorScheme = darkColorScheme(
@@ -52,12 +61,13 @@ val LightColorScheme = lightColorScheme(
 
 class StoriesViewModelFactory(
     private val repository: StoriesRepository,
-    private val networkObserver: NetworkObserver
+    private val networkObserver: NetworkObserver,
+    private val tokenManager: TokenManager
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(StoriesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return StoriesViewModel(repository, networkObserver) as T
+            return StoriesViewModel(repository, networkObserver, tokenManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
@@ -67,29 +77,96 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize SQLite Room Database builder (Offline-First cache)
-        val database = Room.databaseBuilder(
+        // Initialize TokenManager
+        val tokenManager = TokenManager(applicationContext)
+
+        // Initialize In-Memory Room Database (Privacy Focused - wipes on app close)
+        val database = Room.inMemoryDatabaseBuilder(
             applicationContext,
-            AppRoomDatabase::class.java,
-            "storywave_db"
+            AppRoomDatabase::class.java
         ).fallbackToDestructiveMigration().build()
+
+        // Configure OkHttp with AuthInterceptor and Logging
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val cookieJar = object : CookieJar {
+            private val cookieStore = HashMap<String, MutableList<Cookie>>()
+            
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+                val host = url.host
+                val existingCookies = cookieStore[host] ?: mutableListOf()
+                
+                // Merge cookies: replace existing cookies with the same name
+                cookies.forEach { newCookie ->
+                    existingCookies.removeAll { it.name == newCookie.name }
+                    existingCookies.add(newCookie)
+                }
+                
+                android.util.Log.d("Network", "Saving cookies for $host: ${existingCookies.joinToString { it.name }}")
+                cookieStore[host] = existingCookies
+            }
+            
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                val host = url.host
+                val cookies = cookieStore[host] ?: mutableListOf()
+                
+                // Remove expired cookies
+                val now = System.currentTimeMillis()
+                cookies.removeAll { it.expiresAt < now }
+                
+                if (cookies.isNotEmpty()) {
+                    android.util.Log.d("Network", "Loading cookies for $host: ${cookies.joinToString { it.name }}")
+                }
+                return cookies
+            }
+        }
+
+        val okHttpClient = OkHttpClient.Builder()
+            .cookieJar(cookieJar)
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("Accept", "application/json, text/plain, */*")
+                    .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+                    .header("Connection", "keep-alive")
+                    .header("DNT", "1")
+                    .header("Upgrade-Insecure-Requests", "1")
+                    .build()
+                chain.proceed(request)
+            }
+            .addInterceptor(AuthInterceptor(tokenManager))
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        val gson = GsonBuilder()
+            .setLenient()
+            .create()
 
         // Initialize Retrofit Client (Connecting to real cloud database backends)
         val retrofit = Retrofit.Builder()
             .baseUrl("https://ais-dev-afs32tzajecojdczqie5yq-42301013462.asia-southeast1.run.app/api/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
         val retrofitService = retrofit.create(RetrofitService::class.java)
         val networkObserver = NetworkObserver(applicationContext)
 
         // Inject dependency graph
-        val repository = StoriesRepository(database.storyDao(), database.userDao(), retrofitService)
-        val viewModelFactory = StoriesViewModelFactory(repository, networkObserver)
+        val repository = StoriesRepository(database.storyDao(), retrofitService)
+        val viewModelFactory = StoriesViewModelFactory(repository, networkObserver, tokenManager)
         val viewModel: StoriesViewModel = ViewModelProvider(this, viewModelFactory)[StoriesViewModel::class.java]
 
         setContent {
-            var currentScreen by remember { mutableStateOf("Splash") }
+            val isAuthenticated by viewModel.isAuthenticated.collectAsState()
+            
+            // Auto-login: If token exists, start on Home
+            var currentScreen by remember { 
+                mutableStateOf(if (isAuthenticated) "Home" else "Splash") 
+            }
+            
             var isDarkTheme by remember { mutableStateOf(false) }
             var selectedStoryId by remember { mutableStateOf<Int?>(null) }
             var selectedCategoryId by remember { mutableStateOf<String?>(null) }

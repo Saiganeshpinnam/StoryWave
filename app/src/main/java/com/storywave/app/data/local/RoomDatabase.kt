@@ -2,13 +2,11 @@ package com.storywave.app.data.local
 
 import androidx.room.*
 import com.storywave.app.model.Story
-import com.storywave.app.model.User
 import kotlinx.coroutines.flow.Flow
 
-@Database(entities = [Story::class, User::class], version = 2, exportSchema = false)
+@Database(entities = [Story::class], version = 3, exportSchema = false)
 abstract class AppRoomDatabase : RoomDatabase() {
     abstract fun storyDao(): StoryDao
-    abstract fun userDao(): UserDao
 }
 
 @Dao
@@ -27,16 +25,4 @@ interface StoryDao {
 
     @Query("SELECT * FROM stories WHERE isBookmarked = 1")
     fun getBookmarkedStoriesFlow(): Flow<List<Story>>
-}
-
-@Dao
-interface UserDao {
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertUser(user: User)
-
-    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
-    suspend fun getUserByEmail(email: String): User?
-
-    @Query("DELETE FROM users WHERE email = :email")
-    suspend fun deleteUserByEmail(email: String)
 }

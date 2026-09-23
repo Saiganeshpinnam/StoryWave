@@ -1,19 +1,17 @@
 package com.storywave.app.repository
 
 import com.storywave.app.data.local.StoryDao
-import com.storywave.app.data.local.UserDao
 import com.storywave.app.data.local.MockStoriesData
 import com.storywave.app.data.remote.RetrofitService
-import com.storywave.app.model.Story
-import com.storywave.app.model.Category
-import com.storywave.app.model.User
+import com.storywave.app.model.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import android.util.Log
+import retrofit2.Response
+import okhttp3.ResponseBody
 
 class StoriesRepository(
     private val storyDao: StoryDao,
-    private val userDao: UserDao,
     private val retrofitService: RetrofitService
 ) {
     // ROOM DATABASE DAO ACCESS (Local cache Flow)
@@ -30,22 +28,17 @@ class StoriesRepository(
         }
     }
 
-    // AUTH LOGIC
-    suspend fun registerUser(user: User): Boolean {
-        return try {
-            userDao.insertUser(user)
-            true
-        } catch (e: Exception) {
-            false
-        }
+    // AUTH LOGIC (Remote with Spring Boot)
+    suspend fun login(request: LoginRequest): Response<ResponseBody> {
+        return retrofitService.login(request)
     }
 
-    suspend fun getUserByEmail(email: String): User? {
-        return userDao.getUserByEmail(email)
+    suspend fun loginFallback(request: LoginRequest): Response<ResponseBody> {
+        return retrofitService.loginFallback(request)
     }
 
-    suspend fun deleteUser(email: String) {
-        userDao.deleteUserByEmail(email)
+    suspend fun register(request: RegisterRequest): Response<ResponseBody> {
+        return retrofitService.register(request)
     }
 
     // RETROFIT API CALLS (PostgreSQL Sync)
@@ -97,11 +90,30 @@ class StoriesRepository(
     }
 
     suspend fun toggleBookmarkInRoom(id: Int) {
-        storyDao.toggleBookmark(id)
+        try {
+            storyDao.toggleBookmark(id)
+            retrofitService.toggleBookmark(id)
+        } catch (e: Exception) {
+            Log.e("StoriesRepo", "Bookmark sync error", e)
+        }
     }
 
     suspend fun updateProgressInRoom(id: Int, progress: Int) {
-        storyDao.updateProgress(id, progress)
+        try {
+            storyDao.updateProgress(id, progress)
+            retrofitService.updateProgress(id, progress)
+        } catch (e: Exception) {
+            Log.e("StoriesRepo", "Progress sync error", e)
+        }
+    }
+
+    suspend fun getUserStats(): UserStats {
+        return try {
+            retrofitService.getUserStats()
+        } catch (e: Exception) {
+            Log.e("StoriesRepo", "Fetch stats error", e)
+            UserStats()
+        }
     }
 
     suspend fun resetDatabaseInRoom() {

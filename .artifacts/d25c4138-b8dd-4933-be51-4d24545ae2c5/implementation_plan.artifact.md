@@ -1,48 +1,30 @@
-# Implementation Plan - Delete Account Feature
+# Implementation Plan - Fix Login "Non-JSON" Error
 
-This plan adds a "Delete Account" option to the Profile screen, allowing users to permanently remove their data from the local database.
-
-## User Review Required
-
-> [!CAUTION]
-> Deleting an account is a permanent action. All local data associated with the user will be removed. I will include a confirmation dialog to prevent accidental deletions.
+The app is receiving an HTML response instead of JSON when attempting to log in, even though registration appears to work. This typically indicates a mismatch between the app's request (URL or data) and the backend's expectations.
 
 ## Proposed Changes
 
-### Data Layer
-
-#### [MODIFY] [RoomDatabase.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/data/local/RoomDatabase.kt)
-- Add `@Query("DELETE FROM users WHERE email = :email")` to `UserDao`.
-
-#### [MODIFY] [StoriesRepository.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/repository/StoriesRepository.kt)
-- Add `deleteUser(email: String)` method.
-
-### Logic Layer
+### Logic Layer (Debugging & Fix)
 
 #### [MODIFY] [StoriesViewModel.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/viewmodel/StoriesViewModel.kt)
-- Track the `currentUserEmail`.
-- Implement `deleteAccount()` logic:
-    1. Call repository to delete user.
-    2. Clear local session state.
-    3. Trigger logout.
+- **Enhanced Logging**: Log the **entire** raw server response to Logcat when parsing fails. This will allow us to see the title of the HTML page (e.g., "404 Not Found" or "Whitelabel Error Page").
+- **Flexible Endpoints**: I will try adjusting the login path to see if it resolves the 404/HTML issue.
+- **Robust Parsing**: Ensure that even if the server returns a 200 OK with HTML (common misconfiguration), the app correctly reports a "Server Misconfiguration" error instead of a crash.
 
-### UI Layer
+---
 
-#### [MODIFY] [ProfileScreen.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/ui/screens/ProfileScreen.kt)
-- Add a "Delete Account" row in the settings section with a `DeleteForever` icon.
-- Implement an `AlertDialog` for confirmation.
-- On confirmation, execute the deletion and navigate to the Login screen.
+### Networking Layer
+
+#### [MODIFY] [StoryApiService.kt](file:///C:/Users/Saiganesh Pinnam/Downloads/English-Stories-AiStudio-main/English-Stories-AiStudio-main/android/app/src/main/java/com/storywave/app/data/remote/StoryApiService.kt)
+- Add a secondary login method targeting `/api/login` (no `auth/` prefix) to test if the backend route structure is inconsistent.
 
 ## Verification Plan
 
 ### Automated Tests
-- Build the project using `./gradlew :app:assembleDebug`.
+- Run `./gradlew :app:assembleDebug` to ensure no syntax errors.
 
-### Manual Verification
-1. Register a test account and log in.
-2. Navigate to the Profile screen.
-3. Click "Delete Account".
-4. Verify the confirmation dialog appears.
-5. Confirm deletion.
-6. Verify the app returns to the Login screen.
-7. Attempt to log in with the deleted email and verify it shows "User not found".
+### Manual Verification (Critical)
+1. Run the app and attempt to log in.
+2. **Open Logcat** in Android Studio and filter by `StoriesVM`.
+3. **Look for the full HTML printout.** The text inside the `<title>` tag of that HTML will tell us exactly why the server is rejecting the request.
+4. If the fallback route works, the login will succeed immediately.

@@ -115,7 +115,8 @@ public final class StoryDao_Impl implements StoryDao {
   }
 
   @Override
-  public Object insertStories(final List<Story> stories, final Continuation<? super Unit> arg1) {
+  public Object insertStories(final List<Story> stories,
+      final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -129,11 +130,11 @@ public final class StoryDao_Impl implements StoryDao {
           __db.endTransaction();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
-  public Object toggleBookmark(final int storyId, final Continuation<? super Unit> arg1) {
+  public Object toggleBookmark(final int storyId, final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -154,12 +155,12 @@ public final class StoryDao_Impl implements StoryDao {
           __preparedStmtOfToggleBookmark.release(_stmt);
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
   public Object updateProgress(final int storyId, final int progress,
-      final Continuation<? super Unit> arg2) {
+      final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -182,7 +183,7 @@ public final class StoryDao_Impl implements StoryDao {
           __preparedStmtOfUpdateProgress.release(_stmt);
         }
       }
-    }, arg2);
+    }, $completion);
   }
 
   @Override

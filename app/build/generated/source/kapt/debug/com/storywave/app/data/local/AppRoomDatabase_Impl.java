@@ -28,24 +28,20 @@ import javax.annotation.processing.Generated;
 public final class AppRoomDatabase_Impl extends AppRoomDatabase {
   private volatile StoryDao _storyDao;
 
-  private volatile UserDao _userDao;
-
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(3) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `stories` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `author` TEXT NOT NULL, `content` TEXT NOT NULL, `coverUrl` TEXT NOT NULL, `readingTime` INTEGER NOT NULL, `difficulty` TEXT NOT NULL, `categoryId` TEXT NOT NULL, `isFeatured` INTEGER NOT NULL, `isPopular` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `isBookmarked` INTEGER NOT NULL, PRIMARY KEY(`id`))");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `users` (`email` TEXT NOT NULL, `username` TEXT NOT NULL, `password` TEXT NOT NULL, PRIMARY KEY(`email`))");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'de7ca4280f0efdb37316895b290c68cc')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7fb976f6a91966fd278fddcc35bf8405')");
       }
 
       @Override
       public void dropAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS `stories`");
-        db.execSQL("DROP TABLE IF EXISTS `users`");
         final List<? extends RoomDatabase.Callback> _callbacks = mCallbacks;
         if (_callbacks != null) {
           for (RoomDatabase.Callback _callback : _callbacks) {
@@ -112,22 +108,9 @@ public final class AppRoomDatabase_Impl extends AppRoomDatabase {
                   + " Expected:\n" + _infoStories + "\n"
                   + " Found:\n" + _existingStories);
         }
-        final HashMap<String, TableInfo.Column> _columnsUsers = new HashMap<String, TableInfo.Column>(3);
-        _columnsUsers.put("email", new TableInfo.Column("email", "TEXT", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsUsers.put("username", new TableInfo.Column("username", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsUsers.put("password", new TableInfo.Column("password", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        final HashSet<TableInfo.ForeignKey> _foreignKeysUsers = new HashSet<TableInfo.ForeignKey>(0);
-        final HashSet<TableInfo.Index> _indicesUsers = new HashSet<TableInfo.Index>(0);
-        final TableInfo _infoUsers = new TableInfo("users", _columnsUsers, _foreignKeysUsers, _indicesUsers);
-        final TableInfo _existingUsers = TableInfo.read(db, "users");
-        if (!_infoUsers.equals(_existingUsers)) {
-          return new RoomOpenHelper.ValidationResult(false, "users(com.storywave.app.model.User).\n"
-                  + " Expected:\n" + _infoUsers + "\n"
-                  + " Found:\n" + _existingUsers);
-        }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "de7ca4280f0efdb37316895b290c68cc", "1b0dbb385db68f78ab0c15969c20a2bb");
+    }, "7fb976f6a91966fd278fddcc35bf8405", "1cf26f9795eacdf05a8557e04bd7b5f5");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;
@@ -138,7 +121,7 @@ public final class AppRoomDatabase_Impl extends AppRoomDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     final HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "stories","users");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "stories");
   }
 
   @Override
@@ -148,7 +131,6 @@ public final class AppRoomDatabase_Impl extends AppRoomDatabase {
     try {
       super.beginTransaction();
       _db.execSQL("DELETE FROM `stories`");
-      _db.execSQL("DELETE FROM `users`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();
@@ -164,7 +146,6 @@ public final class AppRoomDatabase_Impl extends AppRoomDatabase {
   protected Map<Class<?>, List<Class<?>>> getRequiredTypeConverters() {
     final HashMap<Class<?>, List<Class<?>>> _typeConvertersMap = new HashMap<Class<?>, List<Class<?>>>();
     _typeConvertersMap.put(StoryDao.class, StoryDao_Impl.getRequiredConverters());
-    _typeConvertersMap.put(UserDao.class, UserDao_Impl.getRequiredConverters());
     return _typeConvertersMap;
   }
 
@@ -193,20 +174,6 @@ public final class AppRoomDatabase_Impl extends AppRoomDatabase {
           _storyDao = new StoryDao_Impl(this);
         }
         return _storyDao;
-      }
-    }
-  }
-
-  @Override
-  public UserDao userDao() {
-    if (_userDao != null) {
-      return _userDao;
-    } else {
-      synchronized(this) {
-        if(_userDao == null) {
-          _userDao = new UserDao_Impl(this);
-        }
-        return _userDao;
       }
     }
   }

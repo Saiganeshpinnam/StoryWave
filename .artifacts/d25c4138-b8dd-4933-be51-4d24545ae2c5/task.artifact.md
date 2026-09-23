@@ -1,5 +1,5 @@
-- [x] Add `deleteUser` to `UserDao` in `RoomDatabase.kt`
-- [x] Add `deleteUser` to `StoriesRepository.kt`
-- [x] Add `deleteAccount` logic to `StoriesViewModel.kt`
-- [x] Update `ProfileScreen.kt` with "Delete Account" option and confirmation dialog
+- [x] Enhance network debugging in `StoriesViewModel.kt`
+    - [x] Log full raw response body on parsing failure
+    - [x] Add better error details for non-JSON success responses
+- [x] Implement defensive parsing for login and register
 - [x] Verify build with `./gradlew :app:assembleDebug`

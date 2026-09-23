@@ -29,6 +29,8 @@ data class Category(
 )
 
 data class UserStats(
+    val email: String = "",
+    val username: String = "",
     val storiesRead: Int = 0,
     val dayStreak: Int = 0,
     val minutesSpent: Double = 0.0,

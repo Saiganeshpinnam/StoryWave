@@ -9,10 +9,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import android.widget.Toast
 import com.storywave.app.R
 import com.storywave.app.viewmodel.StoriesViewModel
 
@@ -30,6 +32,7 @@ fun RegisterScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val isLoading by viewModel.isLoading.collectAsState()
     val isOnline by viewModel.isOnline.collectAsState()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -140,7 +143,8 @@ fun RegisterScreen(
                     } else {
                         viewModel.register(username, email, password) { success, errorMsg ->
                             if (success) {
-                                onNavigateToHome()
+                                Toast.makeText(context, "user is successfully registered", Toast.LENGTH_LONG).show()
+                                onNavigateToLogin()
                             } else {
                                 errorMessage = errorMsg
                             }
