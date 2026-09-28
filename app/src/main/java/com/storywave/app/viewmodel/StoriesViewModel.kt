@@ -112,31 +112,27 @@ class StoriesViewModel(
                         }
 
                         onResult(true, null)
-                        return@launch
                     } catch (e: Exception) {
                         Log.e("StoriesVM", "Login parsing error. Raw body: $rawBody", e)
+                        onResult(false, "Incorrect email or password")
                     }
-                }
-
-                // Fallback: Verify against registered accounts
-                if (tokenManager.verifyLocalUser(email, password)) {
-                    tokenManager.saveAuthData("local_jwt_token_" + System.currentTimeMillis())
-                    _isAuthenticated.value = true
-                    onResult(true, null)
                 } else {
-                    onResult(false, "Incorrect email or password")
+                    Log.e("StoriesVM", "Login failed code ${response.code()}. Raw body: $rawBody")
+                    val errorMsg = when (response.code()) {
+                        401, 404 -> "Incorrect email or password"
+                        else -> "Login failed. Please try again."
+                    }
+                    onResult(false, errorMsg)
                 }
             } catch (e: Exception) {
                 _isLoading.value = false
                 Log.e("StoriesVM", "Login network exception", e)
-
-                if (tokenManager.verifyLocalUser(email, password)) {
-                    tokenManager.saveAuthData("local_jwt_token_" + System.currentTimeMillis())
-                    _isAuthenticated.value = true
-                    onResult(true, null)
-                } else {
-                    onResult(false, "Incorrect email or password")
+                val errorMsg = when (e) {
+                    is java.net.UnknownHostException -> "No internet connection"
+                    is java.net.SocketTimeoutException -> "Connection timed out"
+                    else -> "Network error: ${e.message}"
                 }
+                onResult(false, errorMsg)
             }
         }
     }
@@ -151,9 +147,7 @@ class StoriesViewModel(
             _isLoading.value = true
             try {
                 val response = repository.register(RegisterRequest(username, email, password))
-
-                // Register user in local store
-                tokenManager.registerUserLocally(email, password)
+                val rawBody = response.body()?.string() ?: response.errorBody()?.string()
 
                 _isLoading.value = false
 
@@ -162,13 +156,18 @@ class StoriesViewModel(
                 } else if (response.code() == 409) {
                     onResult(false, "Email already registered")
                 } else {
-                    onResult(true, null)
+                    Log.e("StoriesVM", "Register failed code ${response.code()}. Raw body: $rawBody")
+                    onResult(false, "Registration failed (${response.code()})")
                 }
             } catch (e: Exception) {
                 _isLoading.value = false
                 Log.e("StoriesVM", "Register network exception", e)
-                tokenManager.registerUserLocally(email, password)
-                onResult(true, null)
+                val errorMsg = when (e) {
+                    is java.net.UnknownHostException -> "No internet connection"
+                    is java.net.SocketTimeoutException -> "Connection timed out"
+                    else -> "Network error: ${e.message}"
+                }
+                onResult(false, errorMsg)
             }
         }
     }

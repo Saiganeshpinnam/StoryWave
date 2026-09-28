@@ -1,6 +1,7 @@
 package com.storywave.app
 
 import android.os.Bundle
+import com.storywave.app.BuildConfig
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -86,9 +87,9 @@ class MainActivity : ComponentActivity() {
             AppRoomDatabase::class.java
         ).fallbackToDestructiveMigration().build()
 
-        // Configure OkHttp with AuthInterceptor and Logging
+        // Configure OkHttp with AuthInterceptor and Conditional Logging
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         }
 
         val cookieJar = object : CookieJar {
