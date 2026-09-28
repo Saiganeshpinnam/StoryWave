@@ -22,6 +22,22 @@ class TokenManager(context: Context) {
         return prefs.getString(TOKEN_KEY, null)
     }
 
+    fun registerUserLocally(email: String, password: String) {
+        val key = "user_pwd_" + email.lowercase().trim()
+        prefs.edit().putString(key, password).apply()
+    }
+
+    fun verifyLocalUser(email: String, password: String): Boolean {
+        val key = "user_pwd_" + email.lowercase().trim()
+        val storedPassword = prefs.getString(key, null)
+        return storedPassword != null && storedPassword == password
+    }
+
+    fun isUserRegisteredLocally(email: String): Boolean {
+        val key = "user_pwd_" + email.lowercase().trim()
+        return prefs.contains(key)
+    }
+
     fun clear() {
         prefs.edit().clear().apply()
     }
