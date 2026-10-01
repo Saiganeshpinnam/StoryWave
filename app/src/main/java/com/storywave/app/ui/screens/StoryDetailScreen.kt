@@ -85,6 +85,7 @@ fun StoryDetailScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
         ) {
             // Scrollable Content
             Column(

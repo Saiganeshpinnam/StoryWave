@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.storywave.app.R
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SplashScreen(onNavigateToLogin: () -> Unit) {
@@ -21,7 +22,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit) {
     
     LaunchedEffect(key1 = true) {
         startAnimation = true
-        delay(1500)
+        delay(1500.milliseconds)
         onNavigateToLogin()
     }
     

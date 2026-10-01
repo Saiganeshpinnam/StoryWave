@@ -4,7 +4,6 @@ import com.storywave.app.model.Story
 import com.storywave.app.model.Category
 import com.storywave.app.model.LoginRequest
 import com.storywave.app.model.RegisterRequest
-import com.storywave.app.model.AuthResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

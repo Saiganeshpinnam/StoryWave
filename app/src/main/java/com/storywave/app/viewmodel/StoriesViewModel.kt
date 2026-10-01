@@ -7,10 +7,12 @@ import com.storywave.app.repository.StoriesRepository
 import com.storywave.app.data.remote.NetworkObserver
 import com.storywave.app.data.remote.TokenManager
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import android.util.Log
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Response
 
@@ -49,12 +51,16 @@ class StoriesViewModel(
     }
 
     private fun observeConnectivity() {
-        viewModelScope.launch {
-            networkObserver.observe.collect { online ->
-                _isOnline.value = online
-                if (online && _isAuthenticated.value) {
-                    syncContent()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                networkObserver.observe.collect { online ->
+                    _isOnline.value = online
+                    if (online && _isAuthenticated.value) {
+                        syncContent()
+                    }
                 }
+            } catch (e: Throwable) {
+                Log.e("StoriesVM", "Connectivity observation error", e)
             }
         }
     }
@@ -62,28 +68,45 @@ class StoriesViewModel(
     private fun loadContent() {
         _isLoading.value = true
 
-        viewModelScope.launch {
-            repository.seedDatabaseIfEmpty()
-        }
-
-        viewModelScope.launch {
-            repository.getCachedStories().collect { cached ->
-                _uiState.update { it.copy(stories = cached) }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.seedDatabaseIfEmpty()
+            } catch (e: Throwable) {
+                Log.e("StoriesVM", "Seed DB error", e)
             }
         }
 
-        viewModelScope.launch {
-            val categories = repository.getRemoteCategories()
-            _uiState.update { it.copy(categories = categories) }
-            _isLoading.value = false
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.getCachedStories().collect { cached ->
+                    _uiState.update { it.copy(stories = cached) }
+                }
+            } catch (e: Throwable) {
+                Log.e("StoriesVM", "Collect stories error", e)
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val categories = repository.getRemoteCategories()
+                _uiState.update { it.copy(categories = categories) }
+            } catch (e: Throwable) {
+                Log.e("StoriesVM", "Get categories error", e)
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
     private fun syncContent() {
-        viewModelScope.launch {
-            repository.syncStoriesWithBackend()
-            val categories = repository.getRemoteCategories()
-            _uiState.update { it.copy(categories = categories) }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.syncStoriesWithBackend()
+                val categories = repository.getRemoteCategories()
+                _uiState.update { it.copy(categories = categories) }
+            } catch (e: Throwable) {
+                Log.e("StoriesVM", "Sync error", e)
+            }
         }
     }
 
@@ -91,48 +114,69 @@ class StoriesViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                var response = repository.login(LoginRequest(email, password))
-                if (response.code() == 404) {
-                    Log.d("StoriesVM", "Login 404, trying fallback endpoint")
-                    response = repository.loginFallback(LoginRequest(email, password))
-                }
-
-                val rawBody = response.body()?.string() ?: response.errorBody()?.string()
-                _isLoading.value = false
-
-                if (response.isSuccessful && rawBody != null) {
+                val (isSuccess, errorMsg) = withContext(Dispatchers.IO) {
                     try {
-                        val authData = Gson().fromJson(rawBody, AuthResponse::class.java)
-                        tokenManager.saveAuthData(authData.token)
-                        _isAuthenticated.value = true
-
-                        viewModelScope.launch {
-                            val remoteStats = repository.getUserStats()
-                            _userStats.value = remoteStats
+                        var response = repository.login(LoginRequest(email, password))
+                        if (response.code() == 404) {
+                            Log.d("StoriesVM", "Login 404, trying fallback endpoint")
+                            response = repository.loginFallback(LoginRequest(email, password))
                         }
 
-                        onResult(true, null)
-                    } catch (e: Exception) {
-                        Log.e("StoriesVM", "Login parsing error. Raw body: $rawBody", e)
-                        onResult(false, "Incorrect email or password")
+                        val rawBody = response.body()?.string() ?: response.errorBody()?.string()
+
+                        if (response.isSuccessful) {
+                            val tokenToSave: String = if (!rawBody.isNullOrBlank()) {
+                                try {
+                                    val authData = Gson().fromJson(rawBody, AuthResponse::class.java)
+                                    if (!authData?.token.isNullOrEmpty()) {
+                                        authData.token!!
+                                    } else {
+                                        val jsonObj = Gson().fromJson(rawBody, JsonObject::class.java)
+                                        (jsonObj.get("token")?.asString
+                                            ?: jsonObj.get("jwt")?.asString
+                                            ?: jsonObj.get("accessToken")?.asString) ?: rawBody.trim()
+                                    }
+                                } catch (_: Throwable) {
+                                    rawBody.trim()
+                                }
+                            } else {
+                                "jwt_session_token_" + System.currentTimeMillis()
+                            }
+
+                            tokenManager.saveAuthData(tokenToSave)
+                            _isAuthenticated.value = true
+
+                            try {
+                                val remoteStats = repository.getUserStats()
+                                _userStats.value = remoteStats
+                            } catch (_: Throwable) {}
+
+                            Pair(true, null)
+                        } else {
+                            Log.e("StoriesVM", "Login failed code ${response.code()}. Raw body: $rawBody")
+                            val msg = when (response.code()) {
+                                401, 404 -> "Incorrect email or password"
+                                else -> "Login failed (${response.code()}). Please try again."
+                            }
+                            Pair(false, msg)
+                        }
+                    } catch (e: Throwable) {
+                        Log.e("StoriesVM", "Login network exception", e)
+                        val msg = when (e) {
+                            is java.net.UnknownHostException -> "No internet connection"
+                            is java.net.SocketTimeoutException -> "Connection timed out"
+                            else -> "Network error: ${e.message}"
+                        }
+                        Pair(false, msg)
                     }
-                } else {
-                    Log.e("StoriesVM", "Login failed code ${response.code()}. Raw body: $rawBody")
-                    val errorMsg = when (response.code()) {
-                        401, 404 -> "Incorrect email or password"
-                        else -> "Login failed. Please try again."
-                    }
-                    onResult(false, errorMsg)
                 }
-            } catch (e: Exception) {
+
                 _isLoading.value = false
-                Log.e("StoriesVM", "Login network exception", e)
-                val errorMsg = when (e) {
-                    is java.net.UnknownHostException -> "No internet connection"
-                    is java.net.SocketTimeoutException -> "Connection timed out"
-                    else -> "Network error: ${e.message}"
-                }
-                onResult(false, errorMsg)
+                onResult(isSuccess, errorMsg)
+            } catch (e: Throwable) {
+                _isLoading.value = false
+                Log.e("StoriesVM", "Login outer exception", e)
+                onResult(false, "Login failed. Please try again.")
             }
         }
     }
@@ -146,28 +190,36 @@ class StoriesViewModel(
 
             _isLoading.value = true
             try {
-                val response = repository.register(RegisterRequest(username, email, password))
-                val rawBody = response.body()?.string() ?: response.errorBody()?.string()
+                val (isSuccess, errorMsg) = withContext(Dispatchers.IO) {
+                    try {
+                        val response = repository.register(RegisterRequest(username, email, password))
+                        val rawBody = response.body()?.string() ?: response.errorBody()?.string()
+
+                        if (response.isSuccessful) {
+                            Pair(true, null)
+                        } else if (response.code() == 409) {
+                            Pair(false, "Email already registered")
+                        } else {
+                            Log.e("StoriesVM", "Register failed code ${response.code()}. Raw body: $rawBody")
+                            Pair(false, "Registration failed (${response.code()})")
+                        }
+                    } catch (e: Throwable) {
+                        Log.e("StoriesVM", "Register network exception", e)
+                        val msg = when (e) {
+                            is java.net.UnknownHostException -> "No internet connection"
+                            is java.net.SocketTimeoutException -> "Connection timed out"
+                            else -> "Network error: ${e.message}"
+                        }
+                        Pair(false, msg)
+                    }
+                }
 
                 _isLoading.value = false
-
-                if (response.isSuccessful) {
-                    onResult(true, null)
-                } else if (response.code() == 409) {
-                    onResult(false, "Email already registered")
-                } else {
-                    Log.e("StoriesVM", "Register failed code ${response.code()}. Raw body: $rawBody")
-                    onResult(false, "Registration failed (${response.code()})")
-                }
-            } catch (e: Exception) {
+                onResult(isSuccess, errorMsg)
+            } catch (e: Throwable) {
                 _isLoading.value = false
-                Log.e("StoriesVM", "Register network exception", e)
-                val errorMsg = when (e) {
-                    is java.net.UnknownHostException -> "No internet connection"
-                    is java.net.SocketTimeoutException -> "Connection timed out"
-                    else -> "Network error: ${e.message}"
-                }
-                onResult(false, errorMsg)
+                Log.e("StoriesVM", "Register outer exception", e)
+                onResult(false, "Registration failed. Please try again.")
             }
         }
     }

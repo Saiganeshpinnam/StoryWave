@@ -153,10 +153,20 @@ class MainActivity : ComponentActivity() {
             .build()
 
         val retrofitService = retrofit.create(RetrofitService::class.java)
+
+        // Initialize Local Spring Boot Retrofit Client (http://10.0.2.2:8080/api/ for Android Emulator -> localhost:8080)
+        val localRetrofit = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8080/api/")
+            .client(okHttpClient)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        val localRetrofitService = localRetrofit.create(RetrofitService::class.java)
         val networkObserver = NetworkObserver(applicationContext)
 
         // Inject dependency graph
-        val repository = StoriesRepository(database.storyDao(), retrofitService)
+        val repository = StoriesRepository(database.storyDao(), retrofitService, localRetrofitService)
         val viewModelFactory = StoriesViewModelFactory(repository, networkObserver, tokenManager)
         val viewModel: StoriesViewModel = ViewModelProvider(this, viewModelFactory)[StoriesViewModel::class.java]
 

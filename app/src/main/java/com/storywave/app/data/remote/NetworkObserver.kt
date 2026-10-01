@@ -9,7 +9,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 
 class NetworkObserver(context: Context) {
     private val connectivityManager =
@@ -19,43 +18,50 @@ class NetworkObserver(context: Context) {
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
-                launch { send(true) }
+                trySend(true)
             }
 
             override fun onLosing(network: Network, maxMsToLive: Int) {
                 super.onLosing(network, maxMsToLive)
-                launch { send(false) }
+                trySend(false)
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                launch { send(false) }
+                trySend(false)
             }
 
             override fun onUnavailable() {
                 super.onUnavailable()
-                launch { send(false) }
+                trySend(false)
             }
         }
 
-        connectivityManager.registerNetworkCallback(
-            NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build(),
-            callback
-        )
-        
-        // Initial state
-        launch { send(isCurrentlyConnected()) }
+        try {
+            connectivityManager.registerNetworkCallback(
+                NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .build(),
+                callback
+            )
+        } catch (_: Exception) {}
+
+        trySend(isCurrentlyConnected())
 
         awaitClose {
-            connectivityManager.unregisterNetworkCallback(callback)
+            try {
+                connectivityManager.unregisterNetworkCallback(callback)
+            } catch (_: Exception) {}
         }
     }.distinctUntilChanged()
 
     private fun isCurrentlyConnected(): Boolean {
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        return try {
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        } catch (_: Exception) {
+            false
+        }
     }
 }

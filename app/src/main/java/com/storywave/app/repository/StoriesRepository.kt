@@ -12,7 +12,8 @@ import okhttp3.ResponseBody
 
 class StoriesRepository(
     private val storyDao: StoryDao,
-    private val retrofitService: RetrofitService
+    private val retrofitService: RetrofitService,
+    private val localRetrofitService: RetrofitService? = null
 ) {
     // ROOM DATABASE DAO ACCESS (Local cache Flow)
     fun getCachedStories(): Flow<List<Story>> = storyDao.getAllStoriesFlow()
@@ -28,17 +29,72 @@ class StoriesRepository(
         }
     }
 
-    // AUTH LOGIC (Remote with Spring Boot)
+    // AUTH LOGIC (Spring Boot / Remote API)
     suspend fun login(request: LoginRequest): Response<ResponseBody> {
-        return retrofitService.login(request)
+        return if (localRetrofitService != null) {
+            try {
+                val localResp = localRetrofitService.login(request)
+                if (localResp.isSuccessful) {
+                    localResp
+                } else {
+                    try {
+                        val remoteResp = retrofitService.login(request)
+                        if (remoteResp.isSuccessful) remoteResp else localResp
+                    } catch (e: Exception) {
+                        localResp
+                    }
+                }
+            } catch (e: Exception) {
+                retrofitService.login(request)
+            }
+        } else {
+            retrofitService.login(request)
+        }
     }
 
     suspend fun loginFallback(request: LoginRequest): Response<ResponseBody> {
-        return retrofitService.loginFallback(request)
+        return if (localRetrofitService != null) {
+            try {
+                val localResp = localRetrofitService.loginFallback(request)
+                if (localResp.isSuccessful) {
+                    localResp
+                } else {
+                    try {
+                        val remoteResp = retrofitService.loginFallback(request)
+                        if (remoteResp.isSuccessful) remoteResp else localResp
+                    } catch (e: Exception) {
+                        localResp
+                    }
+                }
+            } catch (e: Exception) {
+                retrofitService.loginFallback(request)
+            }
+        } else {
+            retrofitService.loginFallback(request)
+        }
     }
 
     suspend fun register(request: RegisterRequest): Response<ResponseBody> {
-        return retrofitService.register(request)
+        return if (localRetrofitService != null) {
+            try {
+                val localResp = localRetrofitService.register(request)
+                if (localResp.isSuccessful) {
+                    try { retrofitService.register(request) } catch (_: Exception) {}
+                    localResp
+                } else {
+                    try {
+                        val remoteResp = retrofitService.register(request)
+                        if (remoteResp.isSuccessful) remoteResp else localResp
+                    } catch (e: Exception) {
+                        localResp
+                    }
+                }
+            } catch (e: Exception) {
+                retrofitService.register(request)
+            }
+        } else {
+            retrofitService.register(request)
+        }
     }
 
     // RETROFIT API CALLS (PostgreSQL Sync)
