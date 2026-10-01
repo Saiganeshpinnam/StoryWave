@@ -2237,5 +2237,568 @@ And whenever thunder rolled across the Golden Savannah, every animal would look 
             progress = 45,
             isBookmarked = false
         ),
+        Story(
+            id = 20,
+            title = "The Little Lantern of Willow Hill",
+            description = "An ancient map reveals a hidden pathway in the heart of Whispering Woods, leading a young explorer to an unforgettable secret.",
+            author = "Elena Vance",
+            content = """Milo was a curious twelve-year-old boy who lived in a small village called Willow Hill. The village was surrounded by green fields, tall trees, and a quiet river that sparkled under the morning sun.
+
+Milo loved exploring.
+
+He collected unusual stones, watched birds building their nests, and often climbed the old mango tree behind his house. His grandmother used to say, “Milo, your curiosity will take you to wonderful places one day.”
+
+Milo always smiled when she said that.
+
+“I hope so, Grandma,” he would reply.
+
+Milo's best friend was a cheerful girl named Tara. Tara was eleven years old and loved drawing pictures. She carried a small sketchbook everywhere she went.
+
+There was also Bruno, Milo's playful brown dog. Bruno had floppy ears, a wagging tail, and an extraordinary talent for finding things that other people had lost.
+
+One evening, something unusual happened.
+
+The village was preparing for its annual Moonlight Festival. Every family decorated their houses with flowers and small lamps. Children practiced songs and dances, while the adults prepared delicious food.
+
+At the center of the village stood an enormous wooden lantern tower.
+
+Every year, the villagers placed a special lantern at the top of the tower. When the lantern was lit, the festival officially began.
+
+But this year, the special lantern disappeared.
+
+The villagers searched everywhere.
+
+They looked in the community hall, the storage room, the school, and even inside the old temple garden.
+
+Nothing.
+
+The village leader, Mr. Arun, looked worried.
+
+“If we cannot find the lantern,” he said, “the festival cannot begin.”
+
+The children gathered around him.
+
+“Who could have taken it?” someone asked.
+
+Milo shook his head.
+
+“Maybe nobody took it,” he said. “Maybe it was moved somewhere.”
+
+Tara looked at him.
+
+“That sounds like the beginning of an adventure.”
+
+Bruno barked.
+
+Milo laughed.
+
+“Bruno agrees.”
+
+The three friends decided to search for the lantern.
+
+Their first stop was the community hall.
+
+They searched behind curtains, under tables, and inside cupboards.
+
+Nothing.
+
+Then Bruno suddenly began sniffing the floor.
+
+“What's wrong, Bruno?” Milo asked.
+
+The dog walked toward the back door.
+
+He stopped beside a muddy footprint.
+
+Milo crouched down.
+
+“This footprint is fresh.”
+
+Tara examined it carefully.
+
+“It looks like someone walked through the mud after the rain.”
+
+Milo followed the footprints outside.
+
+They crossed the garden and continued toward the river.
+
+The sun was slowly disappearing behind the hills.
+
+“We should go home,” Tara said.
+
+Milo looked at the footprints.
+
+“Just a little farther.”
+
+They followed the trail until they reached an old wooden bridge.
+
+The footprints stopped there.
+
+Milo looked around.
+
+“That's strange.”
+
+Bruno sniffed the wooden bridge.
+
+Then he suddenly ran underneath it.
+
+“Bruno!”
+
+The dog returned with something in his mouth.
+
+It was a small piece of blue cloth.
+
+Tara's eyes widened.
+
+“Look! This could belong to whoever carried the lantern.”
+
+Milo carefully put the cloth into his pocket.
+
+“We need to find out where it came from.”
+
+Suddenly, they heard a sound.
+
+Clink.
+
+Clink.
+
+Clink.
+
+The three friends froze.
+
+“What was that?” Tara whispered.
+
+Clink.
+
+The sound came from the other side of the river.
+
+Milo stared into the darkness.
+
+“I think someone is there.”
+
+They crossed the bridge slowly.
+
+On the other side was an old path leading into the forest.
+
+Nobody usually went there after sunset.
+
+Tara hesitated.
+
+“Are we really going into the forest?”
+
+Milo looked at her.
+
+“We don't have to.”
+
+Tara smiled.
+
+“I didn't say I was afraid.”
+
+Bruno barked proudly.
+
+Together, they entered the forest.
+
+The trees became thicker as they walked. Moonlight slipped through the branches and created silver patterns on the ground.
+
+After a few minutes, they saw something glowing between the trees.
+
+A small yellow light.
+
+“There!” Milo whispered.
+
+They moved closer.
+
+It was an old wooden cabin.
+
+A lantern was hanging beside the door.
+
+Milo knocked.
+
+Nobody answered.
+
+He knocked again.
+
+The door slowly opened.
+
+An old man stood inside.
+
+He had silver hair and kind eyes.
+
+“Who are you?” he asked.
+
+“My name is Milo. This is Tara, and this is Bruno.”
+
+The old man smiled.
+
+“I am Mr. Dev.”
+
+Milo noticed something behind him.
+
+A large golden object was lying on a table.
+
+His heart jumped.
+
+“The festival lantern!”
+
+Mr. Dev looked at the lantern.
+
+“Yes.”
+
+“Why do you have it?” Tara asked.
+
+Mr. Dev sighed.
+
+“I did not steal it.”
+
+“Then why is it here?” Milo asked.
+
+The old man pointed toward the forest.
+
+“Because I was trying to repair it.”
+
+The children looked confused.
+
+“Repair it?” Tara asked.
+
+Mr. Dev nodded.
+
+“Every year, the villagers use this lantern. But this year I noticed that its metal frame was cracked. If someone lit it, the lantern might fall from the tower.”
+
+Milo looked closely.
+
+There was indeed a small crack in the frame.
+
+“Why didn't you tell anyone?”
+
+Mr. Dev lowered his head.
+
+“I tried.”
+
+He paused.
+
+“Three days ago, I went to the village hall to speak to Mr. Arun. But everyone was busy preparing for the festival. Nobody noticed me.”
+
+“So you took the lantern?” Milo asked.
+
+“I moved it because I wanted to keep everyone safe.”
+
+Tara looked at the lantern.
+
+“But you should have told them.”
+
+Mr. Dev nodded.
+
+“You are right.”
+
+Milo thought for a moment.
+
+“Can you repair it?”
+
+Mr. Dev smiled sadly.
+
+“I can repair the frame, but I need a special piece of metal. I searched for it all afternoon, but I couldn't find any.”
+
+Milo remembered the blue cloth in his pocket.
+
+“Wait.”
+
+He showed Mr. Dev the cloth.
+
+“Did you drop this?”
+
+Mr. Dev looked surprised.
+
+“Yes! It belongs to me.”
+
+“Then the footprints were yours.”
+
+Mr. Dev nodded.
+
+Milo suddenly had an idea.
+
+“What if we don't just repair the lantern?”
+
+Tara smiled.
+
+“You mean we improve it?”
+
+Milo nodded.
+
+The four of them began working.
+
+Mr. Dev carefully repaired the cracked frame.
+
+Tara cleaned the glass panels.
+
+Milo polished the metal.
+
+Bruno carried small pieces of wood from one side of the cabin to the other, although nobody had asked him to.
+
+After an hour, the lantern looked beautiful.
+
+But Milo noticed something.
+
+“The light is very weak.”
+
+Mr. Dev explained, “The old lantern uses a small oil lamp.”
+
+Milo looked around the cabin.
+
+On a shelf, he saw several small mirrors.
+
+“What are those?”
+
+“Old mirrors,” Mr. Dev replied.
+
+Milo's eyes brightened.
+
+“Could we place the mirrors inside the lantern?”
+
+Mr. Dev thought about it.
+
+“That might reflect the light.”
+
+They carefully placed the mirrors around the lamp.
+
+When they lit it, something amazing happened.
+
+The small flame became much brighter.
+
+Golden light filled the cabin.
+
+Tara clapped.
+
+“It looks magical!”
+
+Milo smiled.
+
+“We should show everyone.”
+
+But then they heard thunder.
+
+A strong wind rushed through the forest.
+
+The door slammed shut.
+
+Rain began falling heavily.
+
+“We can't leave now,” Mr. Dev said.
+
+They waited inside the cabin.
+
+The storm became louder.
+
+Milo looked worried.
+
+“The festival is tomorrow.”
+
+Tara smiled.
+
+“We still have time.”
+
+The storm continued throughout the night.
+
+The next morning, the village looked completely different.
+
+Branches were scattered across the roads.
+
+Several decorations had fallen down.
+
+The festival ground was covered with puddles.
+
+Mr. Arun looked exhausted.
+
+“How will we prepare everything before evening?” he wondered.
+
+Then Milo, Tara, Bruno, and Mr. Dev arrived.
+
+They carried the repaired lantern.
+
+Mr. Arun stared at it.
+
+“Where have you been?”
+
+Milo explained everything.
+
+Mr. Dev apologized.
+
+“I should have told you immediately.”
+
+Mr. Arun examined the lantern.
+
+“You were trying to protect everyone.”
+
+He smiled.
+
+“And you children helped repair it.”
+
+Tara nodded.
+
+“But we still have a problem.”
+
+She pointed toward the festival ground.
+
+“It needs to be cleaned.”
+
+Mr. Arun looked at the villagers.
+
+For a moment, nobody spoke.
+
+Then Milo picked up a fallen branch.
+
+“I'll start.”
+
+Tara picked up another.
+
+“I'll help.”
+
+Mr. Dev grabbed a broom.
+
+“I will too.”
+
+Bruno barked loudly.
+
+Soon, everyone began working.
+
+Some people cleared the roads.
+
+Others repaired the decorations.
+
+Children collected flowers.
+
+Parents cleaned the festival ground.
+
+Even the oldest villagers helped.
+
+By afternoon, the village looked beautiful again.
+
+As evening arrived, families gathered around the lantern tower.
+
+Mr. Arun climbed the steps carrying the repaired lantern.
+
+He placed it carefully at the top.
+
+Then he turned toward the crowd.
+
+“This lantern is more than a decoration,” he said.
+
+“It reminds us that problems become smaller when we face them together.”
+
+Everyone applauded.
+
+Mr. Arun handed the lighting stick to Milo.
+
+Milo looked surprised.
+
+“Me?”
+
+“You found the lantern,” Mr. Arun said. “You helped repair it. You deserve to light it.”
+
+Milo climbed the tower.
+
+His hands trembled slightly.
+
+He reached the lantern.
+
+Then he carefully touched the flame to the wick.
+
+Whoosh!
+
+The lantern came alive.
+
+Golden light spread across the village.
+
+The mirrors reflected the light in every direction.
+
+It looked as if hundreds of tiny stars were floating above Willow Hill.
+
+The children cheered.
+
+The musicians began playing.
+
+People danced.
+
+The smell of warm food filled the air.
+
+Tara looked at Milo.
+
+“You know what I learned today?”
+
+“What?”
+
+“Sometimes the person who looks suspicious isn't the person who did something wrong.”
+
+Milo nodded.
+
+“And sometimes a problem is actually a warning that something needs to be fixed.”
+
+Mr. Dev heard them and smiled.
+
+Bruno suddenly barked.
+
+Everyone laughed.
+
+Later that night, Milo sat beside his grandmother.
+
+She looked at the glowing lantern.
+
+“I heard you had quite an adventure.”
+
+Milo smiled.
+
+“Yes.”
+
+“What did you learn?”
+
+Milo thought carefully.
+
+“I learned that curiosity is useful, but we also need patience.”
+
+His grandmother nodded.
+
+“And?”
+
+“Before blaming someone, we should understand what really happened.”
+
+“And?”
+
+Milo looked toward the lantern.
+
+“Small problems should not be ignored. If we notice them early, we can prevent bigger problems.”
+
+His grandmother smiled.
+
+“You learned a lot.”
+
+Milo leaned against her shoulder.
+
+The village was quiet now.
+
+The festival music had stopped.
+
+The stars shone brightly above the rooftops.
+
+At the top of the tower, the little lantern continued to glow.
+
+It was not the biggest lantern in the world.
+
+It was not the most expensive.
+
+But its warm light reminded everyone in Willow Hill of something important:
+
+A little kindness can brighten a dark place.
+
+A little courage can begin a great adventure.
+
+And sometimes, when people work together, even a small light can guide an entire village home.""",
+            coverUrl = "https://res.cloudinary.com/dccbkv07a/image/upload/v1790870540/ChatGPT_Image_Oct_1_2026_09_31_05_PM_o6dmqf.png",
+            readingTime = 20,
+            difficulty = "Intermediate",
+            categoryId = "kids",
+            isFeatured = true,
+            isPopular = false,
+            progress = 45,
+            isBookmarked = false
+        ),
     )
 }
